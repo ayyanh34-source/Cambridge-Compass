@@ -3,26 +3,38 @@ import { Search, Compass, LogOut, Menu, X, Sun, Moon } from 'lucide-react';
 import { ScreenTab, UserProfile, ThemeMode } from '../types';
 
 interface NavbarProps {
-  currentTab: ScreenTab;
-  onNavigate: (tab: ScreenTab) => void;
-  onOpenSearch: () => void;
-  user: UserProfile;
-  onToggleAuth: () => void;
-  onOpenLoginModal: () => void;
-  theme: ThemeMode;
-  onToggleTheme: () => void;
+  currentTab?: ScreenTab;
+  currentView?: string;
+  onNavigate?: (tab: ScreenTab) => void;
+  setCurrentView?: (view: any) => void;
+  onOpenSearch?: () => void;
+  user?: UserProfile;
+  onToggleAuth?: () => void;
+  onOpenLoginModal?: () => void;
+  theme?: ThemeMode;
+  onToggleTheme?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   currentTab,
+  currentView,
   onNavigate,
-  onOpenSearch,
-  user,
-  onToggleAuth,
-  onOpenLoginModal,
-  theme,
-  onToggleTheme,
+  setCurrentView,
+  onOpenSearch = () => { },
+  user = { name: 'Student', email: '', role: 'Student', isLoggedIn: false, activeSubjects: [], recentlyViewed: [], pendingRequests: [], monthlyExploredCount: 0 },
+  onToggleAuth = () => { },
+  onOpenLoginModal = () => { },
+  theme = 'light',
+  onToggleTheme = () => {
+    const isDark = document.documentElement.classList.toggle('dark')
+    localStorage.setItem('theme', isDark ? 'dark' : 'light')
+  },
 }) => {
+  const activeTab = (currentView || currentTab || 'home') as ScreenTab;
+  const handleNavigate = (tab: any) => {
+    if (setCurrentView) setCurrentView(tab);
+    if (onNavigate) onNavigate(tab);
+  };
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
   const navLinks: { id: ScreenTab; label: string }[] = [
@@ -58,7 +70,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center gap-3">
           <button
             id="nav-brand-logo-btn"
-            onClick={() => onNavigate('home')}
+            onClick={() => handleNavigate('home')}
             className="flex items-center gap-3 text-left group"
           >
             <div className="w-8 h-8 rounded-full border border-[#EBE8E1] flex items-center justify-center bg-[#FDFCF9] group-hover:border-[#1A1A1A] group-hover:bg-[#1A1A1A] transition-all duration-300 shadow-2xs">
@@ -75,17 +87,16 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Desktop Navigation Links */}
         <nav className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => {
-            const isActive = currentTab === link.id;
+            const isActive = activeTab === link.id;
             return (
               <button
                 key={link.id}
                 id={`nav-link-${link.id}`}
-                onClick={() => onNavigate(link.id)}
-                className={`text-xs uppercase font-mono tracking-[0.18em] transition-all py-1 relative duration-150 ${
-                  isActive
+                onClick={() => handleNavigate(link.id)}
+                className={`text-xs uppercase font-mono tracking-[0.18em] transition-all py-1 relative duration-150 ${isActive
                     ? 'text-[#1A1A1A] font-bold after:content-[""] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-[#C4A678]'
                     : 'text-[#71717A] hover:text-[#1A1A1A]'
-                }`}
+                  }`}
               >
                 {link.label}
               </button>
@@ -185,14 +196,13 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               key={link.id}
               onClick={() => {
-                onNavigate(link.id);
+                handleNavigate(link.id);
                 setMobileMenuOpen(false);
               }}
-              className={`w-full text-left py-2.5 px-3 rounded-lg text-xs font-mono uppercase tracking-[0.18em] transition-colors ${
-                currentTab === link.id
+              className={`w-full text-left py-2.5 px-3 rounded-lg text-xs font-mono uppercase tracking-[0.18em] transition-colors ${activeTab === link.id
                   ? 'bg-[#1A1A1A] text-white font-bold'
                   : 'text-[#52525B] hover:bg-[#EBE8E1]/40'
-              }`}
+                }`}
             >
               {link.label}
             </button>
@@ -240,3 +250,5 @@ export const Navbar: React.FC<NavbarProps> = ({
     </header>
   );
 };
+
+export default Navbar;

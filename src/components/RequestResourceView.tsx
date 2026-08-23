@@ -4,15 +4,15 @@ import { BookOpen, Library, Send, History, CheckCircle2, Loader2 } from 'lucide-
 import confetti from 'canvas-confetti';
 
 interface RequestResourceViewProps {
-  requests: ResourceRequest[];
-  onSubmitRequest: (newReq: ResourceRequest) => void;
-  userEmail: string;
+  requests?: ResourceRequest[];
+  onSubmitRequest?: (newReq: ResourceRequest) => void;
+  userEmail?: string;
 }
 
 export const RequestResourceView: React.FC<RequestResourceViewProps> = ({
-  requests,
-  onSubmitRequest,
-  userEmail,
+  requests = [],
+  onSubmitRequest = (_req?: ResourceRequest) => {},
+  userEmail = '',
 }) => {
   const [subjectType, setSubjectType] = useState<'existing' | 'new'>('existing');
   const [subjectName, setSubjectName] = useState('');
@@ -347,3 +347,5 @@ export const RequestResourceView: React.FC<RequestResourceViewProps> = ({
     </div>
   );
 };
+
+export default RequestResourceView;

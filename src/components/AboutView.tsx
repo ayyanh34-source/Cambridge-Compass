@@ -3,10 +3,10 @@ import { Compass, ShieldCheck, Target, Users, MapPin, ChevronDown, Send } from '
 import { ScreenTab } from '../types';
 
 interface AboutViewProps {
-  onNavigate: (tab: ScreenTab) => void;
+  onNavigate?: (tab: ScreenTab) => void;
 }
 
-export const AboutView: React.FC<AboutViewProps> = ({ onNavigate }) => {
+export const AboutView: React.FC<AboutViewProps> = ({ onNavigate = (_tab?: ScreenTab) => {} }) => {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   const faqs = [
@@ -173,3 +173,5 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigate }) => {
     </div>
   );
 };
+
+export default AboutView;

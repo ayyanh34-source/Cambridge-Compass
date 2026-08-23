@@ -22,15 +22,15 @@ import {
 import confetti from 'canvas-confetti';
 
 interface ResourcesViewProps {
-  selectedSubject: Subject | null;
-  onSelectSubject: (subject: Subject | null) => void;
-  onPreviewDocument: (doc: ResourceDocument) => void;
+  selectedSubject?: Subject | null;
+  onSelectSubject?: (subject: Subject | null) => void;
+  onPreviewDocument?: (doc: ResourceDocument) => void;
 }
 
 export const ResourcesView: React.FC<ResourcesViewProps> = ({
-  selectedSubject,
-  onSelectSubject,
-  onPreviewDocument,
+  selectedSubject = null,
+  onSelectSubject = (_s?: Subject | null) => {},
+  onPreviewDocument = (_doc?: ResourceDocument) => {},
 }) => {
   // Directory & filter states for single-subject view
   const [activeDirectory, setActiveDirectory] = useState<DirectoryType | 'all'>('all');
@@ -638,3 +638,5 @@ export const ResourcesView: React.FC<ResourcesViewProps> = ({
     </div>
   );
 };
+
+export default ResourcesView;

@@ -5,10 +5,10 @@ import { FileText, ChevronDown, Download, Eye } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 interface WhatsNewViewProps {
-  onPreviewDocument: (doc: ResourceDocument) => void;
+  onPreviewDocument?: (doc: ResourceDocument) => void;
 }
 
-export const WhatsNewView: React.FC<WhatsNewViewProps> = ({ onPreviewDocument }) => {
+export const WhatsNewView: React.FC<WhatsNewViewProps> = ({ onPreviewDocument = (_doc?: ResourceDocument) => {} }) => {
   const [showOlder, setShowOlder] = useState(false);
 
   const recentlyAdded = RESOURCE_DOCUMENTS.filter((d) => d.uploadGroup === 'recently_added');
@@ -218,3 +218,5 @@ export const WhatsNewView: React.FC<WhatsNewViewProps> = ({ onPreviewDocument })
     </div>
   );
 };
+
+export default WhatsNewView;

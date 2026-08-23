@@ -15,7 +15,7 @@
     color-scheme: light;
   }
 
-  :root.dark {
+  html.dark, :root.dark {
     --cc-bg-warm: #0E0F12;
     --cc-surface-ivory: #16171C;
     --cc-surface-secondary: #1E1F26;

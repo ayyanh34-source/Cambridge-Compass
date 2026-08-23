@@ -6,11 +6,14 @@ import { SubjectFlowCarousel } from './SubjectFlowCarousel';
 import { ArrowRight, BookOpen } from 'lucide-react';
 
 interface HomeViewProps {
-  onSelectSubject: (subject: Subject) => void;
-  onNavigate: (tab: ScreenTab) => void;
+  onSelectSubject?: (subject: Subject) => void;
+  onNavigate?: (tab: ScreenTab) => void;
 }
 
-export const HomeView: React.FC<HomeViewProps> = ({ onSelectSubject, onNavigate }) => {
+export const HomeView: React.FC<HomeViewProps> = ({
+  onSelectSubject = (_s?: Subject) => {},
+  onNavigate = (_tab?: ScreenTab) => {},
+}) => {
   return (
     <div id="home-view-container" className="flex-grow flex flex-col relative overflow-hidden">
       {/* Editorial Giant Typographic Background Watermark */}
@@ -164,3 +167,5 @@ export const HomeView: React.FC<HomeViewProps> = ({ onSelectSubject, onNavigate 
     </div>
   );
 };
+
+export default HomeView;
