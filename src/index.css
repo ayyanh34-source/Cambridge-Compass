@@ -1,0 +1,292 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --cc-bg-warm: #FDFCF9;
+    --cc-surface-ivory: #FFFFFF;
+    --cc-surface-secondary: #FAF7F0;
+    --cc-ink: #1A1A1A;
+    --cc-secondary: #52525B;
+    --cc-muted: #71717A;
+    --cc-border-tan: #EBE8E1;
+    --cc-primary: #1A1A1A;
+    --cc-primary-container: #262626;
+    --cc-accent-gold: #C4A678;
+    color-scheme: light;
+  }
+
+  :root.dark {
+    --cc-bg-warm: #0E0F12;
+    --cc-surface-ivory: #16171C;
+    --cc-surface-secondary: #1E1F26;
+    --cc-ink: #F4F4F5;
+    --cc-secondary: #A1A1AA;
+    --cc-muted: #71717A;
+    --cc-border-tan: #2C2D35;
+    --cc-primary: #FAF7F0;
+    --cc-primary-container: #262626;
+    --cc-accent-gold: #D4B988;
+    color-scheme: dark;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--cc-bg-warm);
+    color: var(--cc-ink);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+
+  h1, h2, h3, .font-serif, .serif-display {
+    font-family: 'Playfair Display', Georgia, serif;
+    letter-spacing: -0.035em;
+  }
+
+  .font-sans {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  .font-mono, .sans-micro {
+    font-family: 'JetBrains Mono', 'Helvetica Neue', Helvetica, Arial, monospace;
+    letter-spacing: 0.15em;
+  }
+}
+
+/* Editorial aesthetic utility classes */
+.sans-micro {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+.serif-display {
+  font-family: 'Playfair Display', Georgia, serif;
+  letter-spacing: -0.04em;
+}
+
+.editorial-frame {
+  border: 1px solid #EBE8E1;
+  background-color: #FFFFFF;
+}
+
+.editorial-divider {
+  height: 1px;
+  background-color: #EBE8E1;
+}
+
+/* Background tactile patterns */
+.bg-grid-pattern {
+  background-image: linear-gradient(to right, #EBE8E1 1px, transparent 1px),
+                    linear-gradient(to bottom, #EBE8E1 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.bg-pattern-math { 
+  background-image: radial-gradient(circle at 10px 10px, rgba(26, 26, 26, 0.06) 1.5px, transparent 0); 
+  background-size: 24px 24px; 
+}
+
+.bg-pattern-physics { 
+  background-image: linear-gradient(45deg, rgba(26, 26, 26, 0.03) 25%, transparent 25%, transparent 75%, rgba(26, 26, 26, 0.03) 75%), 
+                    linear-gradient(45deg, rgba(26, 26, 26, 0.03) 25%, transparent 25%, transparent 75%, rgba(26, 26, 26, 0.03) 75%); 
+  background-size: 24px 24px; 
+  background-position: 0 0, 12px 12px; 
+}
+
+.bg-pattern-chemistry { 
+  background-image: radial-gradient(circle, rgba(196, 166, 120, 0.08) 15%, transparent 15%), 
+                    radial-gradient(circle, rgba(26, 26, 26, 0.04) 15%, transparent 15%); 
+  background-size: 32px 32px; 
+  background-position: 0 0, 16px 16px; 
+}
+
+.bg-pattern-cs { 
+  background-image: linear-gradient(to right, rgba(26, 26, 26, 0.04) 1px, transparent 1px), 
+                    linear-gradient(to bottom, rgba(26, 26, 26, 0.04) 1px, transparent 1px); 
+  background-size: 20px 20px; 
+}
+
+.bg-pattern-biology {
+  background-image: radial-gradient(ellipse at center, rgba(196, 166, 120, 0.09) 0%, rgba(26, 26, 26, 0) 70%);
+  background-size: 32px 32px;
+}
+
+/* Snaking path animation */
+.snaking-path {
+  stroke-dasharray: 1200;
+  stroke-dashoffset: 1200;
+  animation: drawPath 3.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes drawPath {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Tactile editorial card */
+.tactile-card {
+  background-color: #FFFFFF;
+  border: 1px solid #EBE8E1;
+  box-shadow: 0 1px 3px rgba(26, 26, 26, 0.03);
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tactile-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 32px -8px rgba(26, 26, 26, 0.07), 0 4px 12px -2px rgba(26, 26, 26, 0.03);
+  border-color: #1A1A1A;
+}
+
+.input-focus-ring:focus { 
+  outline: none; 
+  border-color: #1A1A1A; 
+  box-shadow: 0 0 0 1px #1A1A1A; 
+}
+
+/* =========================================================================
+   HIGH-CONTRAST DARK MODE OVERRIDES (Late-Night Study Sessions)
+   ========================================================================= */
+
+html.dark {
+  background-color: #0E0F12;
+}
+
+html.dark body {
+  background-color: #0E0F12;
+  color: #F4F4F5;
+}
+
+/* Background surfaces */
+html.dark .bg-\[\#FDFCF9\],
+html.dark .bg-\[\#FDFCF9\]\/95,
+html.dark .bg-\[\#FDFCF9\]\/98,
+html.dark .bg-\[\#FDFCF9\]\/90,
+html.dark .bg-\[\#FDFCF9\]\/80 {
+  background-color: #0E0F12 !important;
+}
+
+html.dark .bg-white {
+  background-color: #16171C !important;
+}
+
+html.dark .bg-\[\#FAF7F0\],
+html.dark .bg-\[\#F4F1EA\] {
+  background-color: #1E1F26 !important;
+}
+
+/* Text inks */
+html.dark .text-\[\#1A1A1A\] {
+  color: #F4F4F5 !important;
+}
+
+html.dark .text-\[\#52525B\] {
+  color: #B4B4BB !important;
+}
+
+html.dark .text-\[\#71717A\] {
+  color: #9696A0 !important;
+}
+
+html.dark .placeholder-\[\#A1A1AA\]::placeholder {
+  color: #63636E !important;
+}
+
+/* Borders */
+html.dark .border-\[\#EBE8E1\],
+html.dark .border-\[\#EBE8E1\]\/60,
+html.dark .border-\[\#EBE8E1\]\/50,
+html.dark .border-\[\#EBE8E1\]\/40 {
+  border-color: #2C2D35 !important;
+}
+
+html.dark .divide-\[\#EBE8E1\] > :not([hidden]) ~ :not([hidden]) {
+  border-color: #2C2D35 !important;
+}
+
+/* Dark mode tactile cards */
+html.dark .tactile-card {
+  background-color: #16171C !important;
+  border-color: #2C2D35 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4) !important;
+}
+
+html.dark .tactile-card:hover {
+  border-color: #D4B988 !important;
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.8), 0 0 0 1px #D4B988 !important;
+}
+
+/* Primary dark action buttons (invert for contrast where appropriate) */
+html.dark button.bg-\[\#1A1A1A\],
+html.dark a.bg-\[\#1A1A1A\],
+html.dark div.bg-\[\#1A1A1A\] {
+  background-color: #FAF7F0 !important;
+  color: #0E0F12 !important;
+}
+
+html.dark button.bg-\[\#1A1A1A\]:hover,
+html.dark a.bg-\[\#1A1A1A\]:hover {
+  background-color: #D4B988 !important;
+  color: #0E0F12 !important;
+}
+
+/* Pattern fills in dark mode */
+html.dark .bg-grid-pattern {
+  background-image: linear-gradient(to right, #24252D 1px, transparent 1px),
+                    linear-gradient(to bottom, #24252D 1px, transparent 1px) !important;
+}
+
+html.dark .bg-pattern-math { 
+  background-image: radial-gradient(circle at 10px 10px, rgba(244, 244, 245, 0.09) 1.5px, transparent 0) !important; 
+}
+
+html.dark .bg-pattern-physics { 
+  background-image: linear-gradient(45deg, rgba(244, 244, 245, 0.04) 25%, transparent 25%, transparent 75%, rgba(244, 244, 245, 0.04) 75%), 
+                    linear-gradient(45deg, rgba(244, 244, 245, 0.04) 25%, transparent 25%, transparent 75%, rgba(244, 244, 245, 0.04) 75%) !important; 
+}
+
+html.dark .bg-pattern-chemistry { 
+  background-image: radial-gradient(circle, rgba(212, 185, 136, 0.16) 15%, transparent 15%), 
+                    radial-gradient(circle, rgba(244, 244, 245, 0.05) 15%, transparent 15%) !important; 
+}
+
+html.dark .bg-pattern-cs { 
+  background-image: linear-gradient(to right, rgba(244, 244, 245, 0.05) 1px, transparent 1px), 
+                    linear-gradient(to bottom, rgba(244, 244, 245, 0.05) 1px, transparent 1px) !important; 
+}
+
+html.dark .bg-pattern-biology {
+  background-image: radial-gradient(ellipse at center, rgba(212, 185, 136, 0.18) 0%, rgba(244, 244, 245, 0) 70%) !important;
+}
+
+/* Modal dark backdrops and popovers */
+html.dark #search-overlay {
+  background-color: rgba(14, 15, 18, 0.98) !important;
+}
+
+html.dark #resource-preview-modal {
+  background-color: rgba(0, 0, 0, 0.82) !important;
+}
+
+html.dark #login-modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.82) !important;
+}
+
+/* Custom scrollbar in dark mode */
+html.dark ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+html.dark ::-webkit-scrollbar-track {
+  background: #0E0F12;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: #2C2D35;
+  border-radius: 4px;
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #D4B988;
+}

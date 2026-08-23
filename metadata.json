@@ -1,0 +1,6 @@
+{
+  "name": "Cambridge Compass",
+  "description": "A precision archive of Cambridge O Level academic resources, syllabus notes, past papers, and student journey tools.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
