@@ -2,44 +2,48 @@ export type ScreenTab = 'home' | 'resources' | 'whats-new' | 'request' | 'about'
 
 export type ThemeMode = 'light' | 'dark';
 
-export type DirectoryType = 'Notes' | 'Worksheets' | 'Yearlies' | 'Past Papers' | 'Marking Schemes' | 'Topical Past Papers';
+// Matches your Supabase `categories.slug` values exactly
+export type CategorySlug =
+  | 'syllabus'
+  | 'notes'
+  | 'books'
+  | 'practice_materials'
+  | 'helpful_resources';
 
-export type SubjectPattern = 'math' | 'physics' | 'chemistry' | 'cs' | 'biology' | 'english' | 'additional_math' | 'general';
+export const CATEGORY_LABELS: Record<CategorySlug, string> = {
+  syllabus: 'Syllabus',
+  notes: 'Notes',
+  books: 'Books',
+  practice_materials: 'Practice Materials',
+  helpful_resources: 'Helpful Resources',
+};
+
+export interface Category {
+  id: string;
+  subjectId: string;
+  slug: CategorySlug;
+  name: string;
+}
 
 export interface ResourceDocument {
   id: string;
-  title: string;
-  filename: string;
+  title: string;          // human-readable, generated from filename
+  filePath: string;       // relative path in the GitHub repo, e.g. "Chemistry/notes/Metals.pdf"
   subjectId: string;
   subjectName: string;
-  syllabusCode: string;
-  directory: DirectoryType;
-  topic?: string;
-  fileType: 'PDF' | 'DOCX' | 'ZIP';
-  size: string;
-  updatedAt: string;
-  uploadGroup: 'recently_added' | 'last_week' | 'earlier';
-  downloadCount: number;
-  description: string;
-  pageCount?: number;
-  previewSnippet?: string[];
-  solvedStatus?: 'Fully Solved' | 'Unsolved' | 'Marking Scheme Attached';
-  year?: string;
-  session?: 'May/June' | 'Oct/Nov' | 'Specimen';
+  categorySlug: CategorySlug;
+  categoryLabel: string;
+  subfolder?: string | null; // e.g. "History / Ch 3", "Geography / Notes", "Examiner Reports"
+  year?: number | null;
+  fileType: 'PDF';         // everything in the repo is a PDF right now — extend if that changes
 }
 
 export interface Subject {
   id: string;
   name: string;
-  syllabusCode: string;
-  level: string;
-  tagline: string;
-  description: string;
-  pattern: SubjectPattern;
+  syllabusCode?: string | null; // null until you populate it in Supabase
   documentCount: number;
-  directories: DirectoryType[];
-  topics: string[];
-  popularResources: string[];
+  categories: Category[];        // only the categories that actually exist for this subject
 }
 
 export interface ResourceRequest {
@@ -60,26 +64,4 @@ export interface UserProfile {
   avatarUrl?: string;
   role: 'Student' | 'Educator';
   isLoggedIn: boolean;
-  activeSubjects: {
-    subjectId: string;
-    subjectName: string;
-    syllabusCode: string;
-    currentTopic: string;
-    progressPercent: number;
-    lastAccessed: string;
-  }[];
-  recentlyViewed: {
-    documentId: string;
-    title: string;
-    subjectName: string;
-    fileType: string;
-    viewedAt: string;
-  }[];
-  pendingRequests: {
-    subject: string;
-    code: string;
-    title: string;
-    status: string;
-  }[];
-  monthlyExploredCount: number;
 }

@@ -8,8 +8,7 @@ import WhatsNewView from './components/WhatsNewView'
 import RequestResourceView from './components/RequestResourceView'
 import { SearchModal } from './components/SearchModal'
 import { ResourcePreviewModal } from './components/ResourcePreviewModal'
-import { LoginModal } from './components/LoginModal'
-import { Subject, ResourceDocument, ResourceRequest, UserProfile, ScreenTab } from './types'
+import { Subject, ResourceDocument, ResourceRequest, ScreenTab } from './types'
 import { INITIAL_REQUESTS } from './data/mockData'
 
 export default function App() {
@@ -17,15 +16,11 @@ export default function App() {
   const [selectedSubject, setSelectedSubject] = useState<Subject | null>(null)
   const [previewDoc, setPreviewDoc] = useState<ResourceDocument | null>(null)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
-  const [isLoginOpen, setIsLoginOpen] = useState(false)
   const [requests, setRequests] = useState<ResourceRequest[]>(INITIAL_REQUESTS)
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem('theme')
       if (stored === 'dark' || stored === 'light') return stored
-      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        return 'dark'
-      }
     }
     return 'light'
   })
@@ -42,16 +37,6 @@ export default function App() {
     localStorage.setItem('theme', nextTheme)
     setTheme(nextTheme)
   }
-  const [user, setUser] = useState<UserProfile>({
-    name: 'Alex Vance',
-    email: 'alex.vance@cambridge-prep.edu',
-    role: 'Student',
-    isLoggedIn: false,
-    activeSubjects: [],
-    recentlyViewed: [],
-    pendingRequests: [],
-    monthlyExploredCount: 14,
-  })
 
   const handleNavigate = (view: string) => {
     setCurrentView(view)
@@ -62,22 +47,6 @@ export default function App() {
     setSelectedSubject(subject)
     setCurrentView('resources')
     window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
-  const handleLogin = (email: string, name: string) => {
-    setUser((prev) => ({
-      ...prev,
-      name,
-      email,
-      isLoggedIn: true,
-    }))
-  }
-
-  const handleToggleAuth = () => {
-    setUser((prev) => ({
-      ...prev,
-      isLoggedIn: !prev.isLoggedIn,
-    }))
   }
 
   const handleAddRequest = (newReq: ResourceRequest) => {
@@ -111,7 +80,6 @@ export default function App() {
           <RequestResourceView
             requests={requests}
             onSubmitRequest={handleAddRequest}
-            userEmail={user.email}
           />
         )
       default:
@@ -133,9 +101,6 @@ export default function App() {
         currentTab={currentView as ScreenTab}
         onNavigate={(tab: ScreenTab) => handleNavigate(tab)}
         onOpenSearch={() => setIsSearchOpen(true)}
-        user={user}
-        onToggleAuth={handleToggleAuth}
-        onOpenLoginModal={() => setIsLoginOpen(true)}
         theme={theme}
         onToggleTheme={handleToggleTheme}
       />
@@ -148,8 +113,6 @@ export default function App() {
       {/* Footer */}
       <Footer
         onNavigate={(tab: ScreenTab) => handleNavigate(tab)}
-        onOpenLoginModal={() => setIsLoginOpen(true)}
-        isLoggedIn={user.isLoggedIn}
       />
 
       {/* Global Interactive Modals */}
@@ -169,12 +132,6 @@ export default function App() {
       <ResourcePreviewModal
         document={previewDoc}
         onClose={() => setPreviewDoc(null)}
-      />
-
-      <LoginModal
-        isOpen={isLoginOpen}
-        onClose={() => setIsLoginOpen(false)}
-        onLogin={handleLogin}
       />
     </div>
   )

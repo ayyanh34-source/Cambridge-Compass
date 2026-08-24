@@ -1,9 +1,7 @@
 import React from 'react';
 import { Subject, ScreenTab } from '../types';
-import { SUBJECTS_DATA } from '../data/mockData';
-import { CompassCanvas } from './CompassCanvas';
-import { SubjectFlowCarousel } from './SubjectFlowCarousel';
 import { ArrowRight, BookOpen } from 'lucide-react';
+import { CompassCanvas } from './CompassCanvas';
 
 interface HomeViewProps {
   onSelectSubject?: (subject: Subject) => void;
@@ -91,34 +89,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
         </div>
       </section>
 
-      {/* CORE COORDINATES / SUBJECT DECK */}
-      <section
-        id="core-subjects-section"
-        className="py-24 px-4 sm:px-8 md:px-16 bg-white border-y border-[#EBE8E1] relative z-10 overflow-hidden"
-      >
-        <div className="max-w-[1200px] mx-auto">
-          {/* Section Header with Editorial styling */}
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 pb-6 border-b border-[#EBE8E1] gap-4">
-            <div>
-              <span className="sans-micro text-[#C4A678] block mb-2">Subject Index // 3D Spatial Deck</span>
-              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#1A1A1A] tracking-tight">
-                Core Coordinates
-              </h2>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-[#71717A]">
-                {SUBJECTS_DATA.length} Curated Syllabi
-              </span>
-            </div>
-          </div>
 
-          {/* 3D Flow Carousel of Subject Cards */}
-          <SubjectFlowCarousel
-            subjects={SUBJECTS_DATA}
-            onSelectSubject={onSelectSubject}
-          />
-        </div>
-      </section>
 
       {/* EDITORIAL / ARCHIVAL PHILOSOPHY */}
       <section

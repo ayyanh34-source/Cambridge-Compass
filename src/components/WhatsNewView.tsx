@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { RESOURCE_DOCUMENTS } from '../data/mockData';
 import { ResourceDocument } from '../types';
 import { FileText, ChevronDown, Download, Eye } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -11,9 +10,9 @@ interface WhatsNewViewProps {
 export const WhatsNewView: React.FC<WhatsNewViewProps> = ({ onPreviewDocument = (_doc?: ResourceDocument) => {} }) => {
   const [showOlder, setShowOlder] = useState(false);
 
-  const recentlyAdded = RESOURCE_DOCUMENTS.filter((d) => d.uploadGroup === 'recently_added');
-  const lastWeek = RESOURCE_DOCUMENTS.filter((d) => d.uploadGroup === 'last_week');
-  const earlier = RESOURCE_DOCUMENTS.filter((d) => d.uploadGroup === 'earlier');
+  const recentlyAdded: ResourceDocument[] = [];
+  const lastWeek: ResourceDocument[] = [];
+  const earlier: ResourceDocument[] = [];
 
   const handleDownload = (e: React.MouseEvent, doc: ResourceDocument) => {
     e.stopPropagation();
@@ -28,7 +27,7 @@ export const WhatsNewView: React.FC<WhatsNewViewProps> = ({ onPreviewDocument = 
     const url = URL.createObjectURL(blob);
     const a = window.document.createElement('a');
     a.href = url;
-    a.download = doc.filename;
+    a.download = doc.title;
     window.document.body.appendChild(a);
     a.click();
     window.document.body.removeChild(a);
@@ -76,7 +75,7 @@ export const WhatsNewView: React.FC<WhatsNewViewProps> = ({ onPreviewDocument = 
                       {doc.title}
                     </h3>
                     <p className="text-[11px] text-[#71717A] mt-0.5 font-mono">
-                      {doc.updatedAt} • Code [{doc.syllabusCode}] • {doc.size}
+                      {doc.categoryLabel}
                     </p>
                   </div>
                 </div>
@@ -126,7 +125,7 @@ export const WhatsNewView: React.FC<WhatsNewViewProps> = ({ onPreviewDocument = 
                       {doc.title}
                     </h3>
                     <p className="text-[11px] text-[#71717A] mt-0.5 font-mono">
-                      {doc.updatedAt} • Code [{doc.syllabusCode}] • {doc.size}
+                      {doc.categoryLabel}
                     </p>
                   </div>
                 </div>
@@ -175,7 +174,7 @@ export const WhatsNewView: React.FC<WhatsNewViewProps> = ({ onPreviewDocument = 
                         {doc.title}
                       </h3>
                       <p className="text-[11px] text-[#71717A] mt-0.5 font-mono">
-                        {doc.updatedAt} • Code [{doc.syllabusCode}] • {doc.size}
+                        {doc.categoryLabel}
                       </p>
                     </div>
                   </div>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, X, FolderOpen, FileText, ChevronRight, BookOpen } from 'lucide-react';
-import { SUBJECTS_DATA, RESOURCE_DOCUMENTS } from '../data/mockData';
 import { Subject, ResourceDocument } from '../types';
 
 interface SearchModalProps {
@@ -42,25 +41,8 @@ export const SearchModal: React.FC<SearchModalProps> = ({
 
   const normalizedQuery = query.trim().toLowerCase();
 
-  const matchedSubjects = normalizedQuery
-    ? SUBJECTS_DATA.filter(
-        (s) =>
-          s.name.toLowerCase().includes(normalizedQuery) ||
-          s.syllabusCode.toLowerCase().includes(normalizedQuery) ||
-          s.topics.some((t) => t.toLowerCase().includes(normalizedQuery))
-      )
-    : SUBJECTS_DATA.slice(0, 3);
-
-  const matchedDocuments = normalizedQuery
-    ? RESOURCE_DOCUMENTS.filter(
-        (d) =>
-          d.title.toLowerCase().includes(normalizedQuery) ||
-          d.subjectName.toLowerCase().includes(normalizedQuery) ||
-          d.syllabusCode.toLowerCase().includes(normalizedQuery) ||
-          (d.topic && d.topic.toLowerCase().includes(normalizedQuery)) ||
-          d.description.toLowerCase().includes(normalizedQuery)
-      )
-    : RESOURCE_DOCUMENTS.slice(0, 4);
+  const matchedSubjects: Subject[] = [];
+  const matchedDocuments: ResourceDocument[] = [];
 
   return (
     <div
@@ -135,7 +117,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                       {subject.name}
                     </span>
                     <span className="text-[11px] font-mono text-[#71717A]">
-                      Syllabus [{subject.syllabusCode}] • {subject.documentCount} Records cataloged
+                      {subject.documentCount} Records cataloged
                     </span>
                   </div>
                 </div>
@@ -163,7 +145,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                       {doc.title}
                     </span>
                     <span className="text-[11px] font-mono text-[#71717A]">
-                      Code [{doc.syllabusCode}] • {doc.directory} • {doc.size}
+                      {doc.categoryLabel}
                     </span>
                   </div>
                 </div>

@@ -4,14 +4,10 @@ import { Compass, ChevronUp } from 'lucide-react';
 
 interface FooterProps {
   onNavigate?: (tab: ScreenTab) => void;
-  onOpenLoginModal?: () => void;
-  isLoggedIn?: boolean;
 }
 
 export const Footer: React.FC<FooterProps> = ({
   onNavigate = (_tab?: ScreenTab) => {},
-  onOpenLoginModal = () => {},
-  isLoggedIn = false,
 }) => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -79,14 +75,6 @@ export const Footer: React.FC<FooterProps> = ({
           >
             Resources
           </button>
-          {!isLoggedIn && (
-            <button
-              onClick={onOpenLoginModal}
-              className="hover:text-[#1A1A1A] hover:underline transition-colors"
-            >
-              Sign In
-            </button>
-          )}
         </div>
       </div>
     </footer>

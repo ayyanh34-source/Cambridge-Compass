@@ -1,6 +1,6 @@
 import React from 'react';
-import { Search, Compass, LogOut, Menu, X, Sun, Moon } from 'lucide-react';
-import { ScreenTab, UserProfile, ThemeMode } from '../types';
+import { Search, Compass, Menu, X, Sun, Moon } from 'lucide-react';
+import { ScreenTab, ThemeMode } from '../types';
 
 interface NavbarProps {
   currentTab?: ScreenTab;
@@ -8,9 +8,6 @@ interface NavbarProps {
   onNavigate?: (tab: ScreenTab) => void;
   setCurrentView?: (view: any) => void;
   onOpenSearch?: () => void;
-  user?: UserProfile;
-  onToggleAuth?: () => void;
-  onOpenLoginModal?: () => void;
   theme?: ThemeMode;
   onToggleTheme?: () => void;
 }
@@ -21,9 +18,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   onNavigate,
   setCurrentView,
   onOpenSearch = () => { },
-  user = { name: 'Student', email: '', role: 'Student', isLoggedIn: false, activeSubjects: [], recentlyViewed: [], pendingRequests: [], monthlyExploredCount: 0 },
-  onToggleAuth = () => { },
-  onOpenLoginModal = () => { },
   theme = 'light',
   onToggleTheme = () => {
     const isDark = document.documentElement.classList.toggle('dark')
@@ -143,41 +137,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="hidden lg:inline text-[10px] uppercase tracking-wider text-[#A1A1AA]">⌘K</span>
           </button>
 
-          {/* User Profile / Login Toggle */}
-          {user.isLoggedIn ? (
-            <div className="flex items-center gap-2">
-              <div
-                id="nav-user-profile-btn"
-                className="hidden sm:flex items-center gap-2 pl-2 pr-3 py-1 bg-white border border-[#EBE8E1] rounded-full shadow-2xs"
-                title={`Authenticated as ${user.name}`}
-              >
-                <div className="w-6 h-6 rounded-full bg-[#1A1A1A] text-white text-[11px] font-mono flex items-center justify-center">
-                  {user.name.charAt(0)}
-                </div>
-                <span className="text-xs font-medium text-[#1A1A1A] font-serif">
-                  {user.name}
-                </span>
-              </div>
-
-              <button
-                id="nav-logout-btn"
-                onClick={onToggleAuth}
-                className="p-2 text-[#71717A] hover:text-[#BA1A1A] hover:bg-[#FAF7F0] rounded-full transition-colors"
-                title="Sign out"
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
-            </div>
-          ) : (
-            <button
-              id="nav-login-btn"
-              onClick={onOpenLoginModal}
-              className="inline-flex items-center justify-center h-9 px-5 sm:px-6 bg-[#1A1A1A] text-white text-[11px] font-mono uppercase tracking-[0.18em] rounded-full hover:bg-[#C4A678] hover:text-[#1A1A1A] transition-all duration-200 active:scale-95 shadow-sm"
-            >
-              Sign In
-            </button>
-          )}
-
           {/* Mobile Menu Toggle */}
           <button
             id="nav-mobile-menu-btn"
@@ -223,28 +182,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               {theme.toUpperCase()}
             </span>
           </button>
-
-          {!user.isLoggedIn ? (
-            <button
-              onClick={() => {
-                onOpenLoginModal();
-                setMobileMenuOpen(false);
-              }}
-              className="w-full mt-3 py-3 px-4 text-center bg-[#1A1A1A] text-white rounded-full text-xs font-mono uppercase tracking-[0.18em] hover:bg-[#C4A678] transition-colors"
-            >
-              Sign In / Access Archive
-            </button>
-          ) : (
-            <button
-              onClick={() => {
-                onToggleAuth();
-                setMobileMenuOpen(false);
-              }}
-              className="w-full mt-3 py-2 px-3 text-left text-xs font-mono text-red-700"
-            >
-              Sign out ({user.name})
-            </button>
-          )}
         </div>
       )}
     </header>
