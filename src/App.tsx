@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import HomeView from './components/HomeView'
@@ -10,6 +10,13 @@ import { SearchModal } from './components/SearchModal'
 import { ResourcePreviewModal } from './components/ResourcePreviewModal'
 import { Subject, ResourceDocument, ResourceRequest, ScreenTab } from './types'
 import { INITIAL_REQUESTS } from './data/mockData'
+
+// Shape of what we store in each browser history entry, so the back/forward
+// buttons can restore exactly which view and subject were active.
+interface NavState {
+  view: string
+  subject: Subject | null
+}
 
 export default function App() {
   const [currentView, setCurrentView] = useState<string>('home')
@@ -31,6 +38,39 @@ export default function App() {
     localStorage.setItem('theme', theme)
   }, [theme])
 
+  // On first load, seed the initial history entry so there's always a
+  // well-defined state to fall back to if the user hits back all the way.
+  useEffect(() => {
+    window.history.replaceState({ view: 'home', subject: null } as NavState, '')
+  }, [])
+
+  // Listen for browser back/forward and restore whatever view+subject was
+  // active at that point in history, instead of doing nothing (old behavior)
+  // or reloading back to home (default browser fallback with no history state).
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      const state = event.state as NavState | null
+      if (state) {
+        setCurrentView(state.view)
+        setSelectedSubject(state.subject)
+      } else {
+        setCurrentView('home')
+        setSelectedSubject(null)
+      }
+      setPreviewDoc(null)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
+
+  // Pushes a new browser history entry any time navigation actually changes
+  // the view or subject, so back/forward has something real to step through.
+  const pushHistory = useCallback((view: string, subject: Subject | null) => {
+    window.history.pushState({ view, subject } as NavState, '')
+  }, [])
+
   const handleToggleTheme = () => {
     const isDark = document.documentElement.classList.toggle('dark')
     const nextTheme = isDark ? 'dark' : 'light'
@@ -40,12 +80,14 @@ export default function App() {
 
   const handleNavigate = (view: string) => {
     setCurrentView(view)
+    pushHistory(view, selectedSubject)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const handleSelectSubject = (subject: Subject | null) => {
     setSelectedSubject(subject)
     setCurrentView('resources')
+    pushHistory('resources', subject)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -67,7 +109,7 @@ export default function App() {
         return (
           <ResourcesView
             selectedSubject={selectedSubject}
-            onSelectSubject={setSelectedSubject}
+            onSelectSubject={handleSelectSubject}
             onPreviewDocument={(doc) => setPreviewDoc(doc)}
           />
         )

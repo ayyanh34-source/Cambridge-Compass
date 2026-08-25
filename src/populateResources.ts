@@ -23,12 +23,20 @@ const FOLDER_TO_SLUG: Record<string, string> = {
     "pp": "practice_materials",
     "importantresources": "helpful_resources",
     "yearlies": "practice_materials",         // Environmental Management naming
-    "topicals": "practice_materials",         // Pakistan Studies (geo) naming
+    "topicals": "practice_materials",         // Pakistan Studies Geography naming
     "practicematerial": "practice_materials", // Urdu spelled it out in full
 };
 
 function normalizeFolderName(name: string): string {
     return name.toLowerCase().replace(/[\s_-]+/g, "");
+}
+
+// Strips a leading "Geography " or trailing " geo" from a folder name, so
+// "Geography Books" -> "Books" and "Notes geo" -> "Notes" before slug lookup.
+function stripGeoLabel(name: string): string {
+    const prefixStripped = name.replace(/^geography\s+/i, "");
+    if (prefixStripped !== name) return prefixStripped;
+    return name.replace(/\s+geo$/i, "");
 }
 
 function titleFromFilename(filename: string): string {
@@ -43,22 +51,6 @@ function titleFromFilename(filename: string): string {
 function extractYear(filename: string): number | null {
     const match = filename.match(/(20\d{2})/);
     return match ? parseInt(match[1], 10) : null;
-}
-
-// Pakistan Studies splits into Geography and History components, which must be
-// preserved in the UI. Folder naming isn't consistent: some use a "geo" suffix
-// (e.g. "Notes geo"), one uses a "Geography" prefix (e.g. "Geography Books").
-// No-suffix folders (e.g. plain "Notes", "Books") belong to History.
-function extractPakStudiesComponent(categoryFolder: string): { component: string; baseFolder: string } {
-    const geoPrefixMatch = categoryFolder.match(/^geography\s+(.+)$/i);
-    if (geoPrefixMatch) {
-        return { component: "Geography", baseFolder: geoPrefixMatch[1] };
-    }
-    const geoSuffixMatch = categoryFolder.match(/^(.+)\s+geo$/i);
-    if (geoSuffixMatch) {
-        return { component: "Geography", baseFolder: geoSuffixMatch[1] };
-    }
-    return { component: "History", baseFolder: categoryFolder };
 }
 
 async function main() {
@@ -80,7 +72,6 @@ async function main() {
 
     console.log(`Found ${filePaths.length} candidate files.`);
 
-    // Load existing data, including already-inserted file_paths for dedupe
     const { data: subjects } = await supabase.from("subjects").select("id, name");
     const { data: categories } = await supabase.from("categories").select("id, subject_id, slug");
     const { data: existingResources } = await supabase.from("resources").select("file_path");
@@ -105,19 +96,6 @@ async function main() {
 
         const parts = path.split("/");
         const subjectFolder = parts[0];
-        let categoryFolder: string;
-        let subfolder: string | null;
-        let filename: string;
-
-        if (parts.length === 2) {
-            categoryFolder = "syllabus";
-            subfolder = null;
-            filename = parts[1];
-        } else {
-            categoryFolder = parts[1];
-            filename = parts[parts.length - 1];
-            subfolder = parts.length > 3 ? parts.slice(2, -1).join(" / ") : null;
-        }
 
         const subject = subjects.find((s) => s.name === subjectFolder);
         if (!subject) {
@@ -126,25 +104,41 @@ async function main() {
             continue;
         }
 
-        let resolvedCategoryFolder = categoryFolder;
+        let categoryFolder: string;
+        let subfolder: string | null;
+        let filename: string;
         let componentPrefix: string | null = null;
 
-        // Pakistan Studies: split Geography/History component out of the folder name
-        if (subjectFolder === "Pakistan Studies" && parts.length > 2) {
-            const { component, baseFolder } = extractPakStudiesComponent(categoryFolder);
-            resolvedCategoryFolder = baseFolder;
-            componentPrefix = component;
+        if (parts.length === 2) {
+            // Loose file directly in subject folder = syllabus
+            categoryFolder = "syllabus";
+            subfolder = null;
+            filename = parts[1];
+        } else if (
+            subjectFolder === "Pakistan Studies" &&
+            parts.length >= 4 &&
+            (parts[1] === "Geography" || parts[1] === "History")
+        ) {
+            // New structure: Pakistan Studies/Geography|History/<category folder>/[subfolders.../]file
+            componentPrefix = parts[1];
+            categoryFolder = parts[2];
+            filename = parts[parts.length - 1];
+            subfolder = parts.length > 4 ? parts.slice(3, -1).join(" / ") : null;
+        } else {
+            categoryFolder = parts[1];
+            filename = parts[parts.length - 1];
+            subfolder = parts.length > 3 ? parts.slice(2, -1).join(" / ") : null;
         }
 
-        // Examiner Reports: treat as Helpful Resources with an explicit subfolder label,
-        // whether it appears nested (English) or as a top-level category folder (Urdu)
+        const cleanedCategoryFolder = stripGeoLabel(categoryFolder);
+
         let slug: string;
-        if (normalizeFolderName(resolvedCategoryFolder) === "examinerreports") {
+        if (normalizeFolderName(cleanedCategoryFolder) === "examinerreports") {
             slug = "helpful_resources";
             subfolder = subfolder ? `Examiner Reports / ${subfolder}` : "Examiner Reports";
         } else {
             slug =
-                parts.length === 2 ? "syllabus" : FOLDER_TO_SLUG[normalizeFolderName(resolvedCategoryFolder)];
+                parts.length === 2 ? "syllabus" : FOLDER_TO_SLUG[normalizeFolderName(cleanedCategoryFolder)];
         }
 
         if (!slug) {
