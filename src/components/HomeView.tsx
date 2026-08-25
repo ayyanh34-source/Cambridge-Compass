@@ -2,6 +2,7 @@ import React from 'react';
 import { Subject, ScreenTab } from '../types';
 import { ArrowRight, BookOpen } from 'lucide-react';
 import { CompassCanvas } from './CompassCanvas';
+import { SubjectFlowCarousel } from './SubjectFlowCarousel';
 
 interface HomeViewProps {
   onSelectSubject?: (subject: Subject) => void;
@@ -9,8 +10,8 @@ interface HomeViewProps {
 }
 
 export const HomeView: React.FC<HomeViewProps> = ({
-  onSelectSubject = (_s?: Subject) => {},
-  onNavigate = (_tab?: ScreenTab) => {},
+  onSelectSubject = (_s?: Subject) => { },
+  onNavigate = (_tab?: ScreenTab) => { },
 }) => {
   return (
     <div id="home-view-container" className="flex-grow flex flex-col relative overflow-hidden">
@@ -89,7 +90,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
         </div>
       </section>
 
-
+      {/* CURRICULUM DIRECTORY FLOW CAROUSEL */}
+      <SubjectFlowCarousel onSelectSubject={onSelectSubject} />
 
       {/* EDITORIAL / ARCHIVAL PHILOSOPHY */}
       <section
