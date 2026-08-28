@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://cambridge-compass.vercel.app/sitemap.xml

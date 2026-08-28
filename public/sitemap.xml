@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://cambridge-compass.vercel.app/</loc>
+  </url>
+  <url>
+    <loc>https://cambridge-compass.vercel.app/subjects/chemistry</loc>
+  </url>
+  <url>
+    <loc>https://cambridge-compass.vercel.app/subjects/computer-science</loc>
+  </url>
+  <url>
+    <loc>https://cambridge-compass.vercel.app/subjects/english</loc>
+  </url>
+  <url>
+    <loc>https://cambridge-compass.vercel.app/subjects/environmental-management</loc>
+  </url>
+  <url>
+    <loc>https://cambridge-compass.vercel.app/subjects/isl</loc>
+  </url>
+  <url>
+    <loc>https://cambridge-compass.vercel.app/subjects/maths</loc>
+  </url>
+  <url>
+    <loc>https://cambridge-compass.vercel.app/subjects/pakistan-studies</loc>
+  </url>
+  <url>
+    <loc>https://cambridge-compass.vercel.app/subjects/physics</loc>
+  </url>
+  <url>
+    <loc>https://cambridge-compass.vercel.app/subjects/urdu</loc>
+  </url>
+</urlset>

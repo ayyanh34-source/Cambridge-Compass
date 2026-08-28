@@ -10,6 +10,8 @@ import { SearchModal } from './components/SearchModal'
 import { ResourcePreviewModal } from './components/ResourcePreviewModal'
 import { Subject, ResourceDocument, ResourceRequest, ScreenTab } from './types'
 import { INITIAL_REQUESTS } from './data/mockData'
+import { useDocumentMetadata } from './hooks/useDocumentMetadata'
+import { useSubjects } from './hooks/useSubjects'
 
 // Shape of what we store in each browser history entry, so the back/forward
 // buttons can restore exactly which view and subject were active.
@@ -18,9 +20,44 @@ interface NavState {
   subject: Subject | null
 }
 
+// Derives a URL slug from subject.name (the only viable field — Subject has no
+// dedicated slug column). Lowercase + spaces→hyphens. Must match sitemap.xml exactly.
+function slugify(subject: Subject): string {
+  return subject.name.toLowerCase().replace(/\s+/g, '-')
+}
+
+// Parses a pathname back to a { view, subjectSlug } pair.
+// Anything unrecognized falls back to home.
+function pathToView(pathname: string): { view: string; subjectSlug: string | null } {
+  if (pathname === '/' || pathname === '') return { view: 'home', subjectSlug: null }
+  if (pathname === '/about')     return { view: 'about',     subjectSlug: null }
+  if (pathname === '/whats-new') return { view: 'whats-new', subjectSlug: null }
+  if (pathname === '/request')   return { view: 'request',   subjectSlug: null }
+  const subjectMatch = pathname.match(/^\/subjects\/(.+)$/)
+  if (subjectMatch) return { view: 'resources', subjectSlug: subjectMatch[1] }
+  return { view: 'home', subjectSlug: null }
+}
+
 export default function App() {
-  const [currentView, setCurrentView] = useState<string>('home')
+  // Lazily initialize from the URL to eliminate flash on non-subject routes.
+  // For /subjects/:slug we can't resolve the Subject yet (subjects haven't loaded),
+  // but we CAN start in 'resources' so ResourcesView renders its own
+  // subjectsLoading skeleton instead of the full homepage flashing in.
+  const [currentView, setCurrentView] = useState<string>(() => {
+    const { view, subjectSlug } = pathToView(window.location.pathname)
+    // /subjects/:slug → start in 'resources' (selectedSubject stays null until
+    // the mount useEffect resolves the slug — ResourcesView handles null gracefully
+    // by showing its subject grid + loading skeleton while data fetches)
+    if (view === 'resources' && subjectSlug) return 'resources'
+    return view
+  })
   const [selectedSubject, setSelectedSubject] = useState<Subject | null>(null)
+
+  useDocumentMetadata(currentView, selectedSubject)
+
+  // Needed for deep-link resolution on mount (e.g. /subjects/physics)
+  const { subjects } = useSubjects()
+
   const [previewDoc, setPreviewDoc] = useState<ResourceDocument | null>(null)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [requests, setRequests] = useState<ResourceRequest[]>(INITIAL_REQUESTS)
@@ -38,11 +75,30 @@ export default function App() {
     localStorage.setItem('theme', theme)
   }, [theme])
 
-  // On first load, seed the initial history entry so there's always a
-  // well-defined state to fall back to if the user hits back all the way.
+  // On mount: parse the actual URL the user landed on and restore the correct
+  // view + subject. Non-subject paths (/about, /, etc.) resolve immediately.
+  // /subjects/:slug waits for subjects to load before trying to match.
   useEffect(() => {
-    window.history.replaceState({ view: 'home', subject: null } as NavState, '')
-  }, [])
+    const { view, subjectSlug } = pathToView(window.location.pathname)
+
+    if (view === 'resources' && subjectSlug) {
+      if (subjects.length === 0) return // only this branch waits on subjects
+      const matched = subjects.find((s) => slugify(s) === subjectSlug)
+      if (matched) {
+        setSelectedSubject(matched)
+        setCurrentView('resources')
+        window.history.replaceState({ view: 'resources', subject: matched } as NavState, '', `/subjects/${subjectSlug}`)
+      } else {
+        // Unknown/stale slug — fall back to home
+        setCurrentView('home')
+        window.history.replaceState({ view: 'home', subject: null } as NavState, '', '/')
+      }
+    } else {
+      setCurrentView(view)
+      const path = view === 'home' ? '/' : `/${view}`
+      window.history.replaceState({ view, subject: null } as NavState, '', path)
+    }
+  }, [subjects])
 
   // Listen for browser back/forward and restore whatever view+subject was
   // active at that point in history, instead of doing nothing (old behavior)
@@ -65,10 +121,15 @@ export default function App() {
     return () => window.removeEventListener('popstate', handlePopState)
   }, [])
 
-  // Pushes a new browser history entry any time navigation actually changes
-  // the view or subject, so back/forward has something real to step through.
+  // Pushes a new browser history entry with a real URL path.
+  // NavState shape is unchanged — view + subject are still stored in state.
   const pushHistory = useCallback((view: string, subject: Subject | null) => {
-    window.history.pushState({ view, subject } as NavState, '')
+    const path = view === 'resources' && subject
+      ? `/subjects/${slugify(subject)}`
+      : view === 'home' ? '/'
+      : `/${view}`
+    console.log('[pushHistory]', { view, subjectName: subject?.name, path })
+    window.history.pushState({ view, subject } as NavState, '', path)
   }, [])
 
   const handleToggleTheme = () => {
