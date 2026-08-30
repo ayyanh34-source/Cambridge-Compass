@@ -107,7 +107,7 @@ export const ResourcesView: React.FC<ResourcesViewProps> = ({
     });
 
     try {
-      const url = getResourceUrl(doc.filePath);
+      const url = getResourceUrl(doc.filePath, doc.fileSizeBytes);
       const response = await fetch(url);
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const blob = await response.blob();

@@ -27,7 +27,7 @@ export const ResourcePreviewModal: React.FC<ResourcePreviewModalProps> = ({
     });
 
     try {
-      const url = getResourceUrl(doc.filePath);
+      const url = getResourceUrl(doc.filePath, doc.fileSizeBytes);
       const response = await fetch(url);
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const blob = await response.blob();
@@ -111,7 +111,7 @@ export const ResourcePreviewModal: React.FC<ResourcePreviewModalProps> = ({
           </button>
 
           <a
-            href={getResourceUrl(doc.filePath)}
+            href={getResourceUrl(doc.filePath, doc.fileSizeBytes)}
             target="_blank"
             rel="noopener noreferrer"
             className="text-[11px] font-mono text-[#71717A] hover:text-[#1A1A1A] underline flex items-center gap-1"

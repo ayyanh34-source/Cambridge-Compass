@@ -18,7 +18,9 @@ export function useSubjectResources(subjectId: string | null) {
 
             const { data, error } = await supabase
                 .from("resources")
-                .select("id, title, file_path, subfolder, year, subject_id, subjects(name), categories(slug, name)")
+                .select(
+                    "id, title, file_path, subfolder, year, file_size_bytes, subject_id, subjects(name), categories(slug, name)"
+                )
                 .eq("subject_id", subjectId)
                 .order("year", { ascending: false });
 
@@ -39,6 +41,7 @@ export function useSubjectResources(subjectId: string | null) {
                 categoryLabel: r.categories?.name ?? CATEGORY_LABELS[r.categories?.slug as CategorySlug],
                 subfolder: r.subfolder,
                 year: r.year,
+                fileSizeBytes: r.file_size_bytes,
                 fileType: "PDF",
             }));
 

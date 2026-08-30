@@ -70,6 +70,13 @@ async function main() {
         .map((item: any) => item.path)
         .filter((path: string) => path.split("/").length >= 2);
 
+    const sizeByPath = new Map<string, number>();
+    for (const item of treeData.tree) {
+        if (item.type === "blob" && typeof item.size === "number") {
+            sizeByPath.set(item.path, item.size);
+        }
+    }
+
     console.log(`Found ${filePaths.length} candidate files.`);
 
     const { data: subjects } = await supabase.from("subjects").select("id, name");
@@ -167,6 +174,7 @@ async function main() {
             file_path: path,
             subfolder: subfolder,
             year: extractYear(filename),
+            file_size_bytes: sizeByPath.get(path) ?? null,
         });
 
         if (error) {

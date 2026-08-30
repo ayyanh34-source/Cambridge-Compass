@@ -35,6 +35,7 @@ export interface ResourceDocument {
   categoryLabel: string;
   subfolder?: string | null; // e.g. "History / Ch 3", "Geography / Notes", "Examiner Reports"
   year?: number | null;
+  fileSizeBytes?: number | null;
   fileType: 'PDF';         // everything in the repo is a PDF right now — extend if that changes
 }
 
