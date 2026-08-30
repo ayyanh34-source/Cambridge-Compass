@@ -30,9 +30,9 @@ function slugify(subject: Subject): string {
 // Anything unrecognized falls back to home.
 function pathToView(pathname: string): { view: string; subjectSlug: string | null } {
   if (pathname === '/' || pathname === '') return { view: 'home', subjectSlug: null }
-  if (pathname === '/about')     return { view: 'about',     subjectSlug: null }
+  if (pathname === '/about') return { view: 'about', subjectSlug: null }
   if (pathname === '/whats-new') return { view: 'whats-new', subjectSlug: null }
-  if (pathname === '/request')   return { view: 'request',   subjectSlug: null }
+  if (pathname === '/request') return { view: 'request', subjectSlug: null }
   const subjectMatch = pathname.match(/^\/subjects\/(.+)$/)
   if (subjectMatch) return { view: 'resources', subjectSlug: subjectMatch[1] }
   return { view: 'home', subjectSlug: null }
@@ -127,7 +127,7 @@ export default function App() {
     const path = view === 'resources' && subject
       ? `/subjects/${slugify(subject)}`
       : view === 'home' ? '/'
-      : `/${view}`
+        : `/${view}`
     console.log('[pushHistory]', { view, subjectName: subject?.name, path })
     window.history.pushState({ view, subject } as NavState, '', path)
   }, [])

@@ -29,6 +29,7 @@ export const ResourcePreviewModal: React.FC<ResourcePreviewModalProps> = ({
     try {
       const url = getResourceUrl(doc.filePath);
       const response = await fetch(url);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const blob = await response.blob();
       const blobUrl = URL.createObjectURL(blob);
       const a = window.document.createElement('a');
