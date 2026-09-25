@@ -24,7 +24,7 @@ const CATEGORY_EXCLUSIONS: Record<string, string[]> = {
     "Computer Science": ["helpful_resources"],
     "English": ["notes", "practice_materials"],
     "Environmental Management": ["helpful_resources"],
-    "ISL": ["practice_materials"],
+    "Islamiat": ["practice_materials"],
     "Maths": [],
     "Pakistan Studies": [],
     "Physics": ["helpful_resources"],
